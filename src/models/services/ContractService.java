@@ -16,14 +16,14 @@ public class ContractService {
 	public void processContract(Contract contract, Integer months) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(contract.getDate());
-		Double value = contract.getTotalValue() / months;
 		
 		
 		for(int i=1; i<=months; i++) {
+			Double value = contract.getTotalValue() / months;
 			cal.add(Calendar.MONTH, 1);
-			Double simpleInterest = ops.interest(value, i);
-			Double paymentFee = ops.paymentFee(simpleInterest);
-			contract.getInstallments().add(new Installment(cal.getTime(), paymentFee));
+			value += ops.interest(value, i);
+			value += ops.paymentFee(value);
+			contract.addInstallment(new Installment(cal.getTime(), value));
 					
 		}
 		
